@@ -114,21 +114,20 @@ class Stl:
             buoyancy_vector[1] += a*depth*n[1]
             buoyancy_vector[2] += a*depth*n[2]
         return mag(buoyancy_vector)
-##    BUGGY -- DO NOT USE
-##    def initialize(self):
-##        self.file.write("solid ASCII\n")
-##    def write_facet(self, n, v):
-##        v1, v2, v3 = v[0], v[1], v[2]
-##        n1, n2, n3 = to_man(n[0]), to_man(n[1]), to_man(n[2])
-##        self.file.write(f"facet normal {n1} {n2} {n3}\n")
-##        v11, v12, v13 = to_man(v1[0]), to_man(v1[1]), to_man(v1[2])
-##        v21, v22, v23 = to_man(v2[0]), to_man(v2[1]), to_man(v2[2])
-##        v31, v32, v33 = to_man(v3[0]), to_man(v3[1]), to_man(v3[2])
-##        self.file.write("outer loop\n")
-##        self.file.write(f"vertex {v11} {v12} {v13}\n")
-##        self.file.write(f"vertex {v21} {v22} {v23}\n")
-##        self.file.write(f"vertex {v31} {v32} {v33}\n")
-##        self.file.write("endloop\nendfacet\n")
-##    def finalize(self):
-##        self.file.write("endsolid")
-##        self.file.close()
+    def initialize(self):
+        self.file.write("solid ASCII\n")
+    def write_facet(self, n, v):
+        v1, v2, v3 = v[0], v[1], v[2]
+        n1, n2, n3 = to_man(n[0]), to_man(n[1]), to_man(n[2])
+        self.file.write(f"facet normal {n1} {n2} {n3}\n")
+        v11, v12, v13 = to_man(v1[0]), to_man(v1[1]), to_man(v1[2])
+        v21, v22, v23 = to_man(v2[0]), to_man(v2[1]), to_man(v2[2])
+        v31, v32, v33 = to_man(v3[0]), to_man(v3[1]), to_man(v3[2])
+        self.file.write("outer loop\n")
+        self.file.write(f"vertex {v11} {v12} {v13}\n")
+        self.file.write(f"vertex {v21} {v22} {v23}\n")
+        self.file.write(f"vertex {v31} {v32} {v33}\n")
+        self.file.write("endloop\nendfacet\n")
+    def finalize(self):
+        self.file.write("endsolid")
+        self.file.close()
