@@ -98,11 +98,14 @@ class Stl:
                         vz = float(line[3])
                     self.stl[-1].add_vertex((vx, vy, vz))
     def compute_surface_area(self):
+        # Approximate surface area by summing area of all facets
         self.surface_area = 0
         for facet in self.stl:
             self.surface_area += facet.compute_area()
         return self.surface_area
     def compute_volume(self):
+        # Approximate buoyancy force on the object to approximate volume
+        # This function is not exactly accurate; expect up to 1% error for complex geometries
         self.volume = 0
         buoyancy_vector = [0, 0, 0]
         for facet in self.stl:
@@ -115,8 +118,10 @@ class Stl:
             buoyancy_vector[2] += a*depth*n[2]
         return mag(buoyancy_vector)
     def initialize(self):
+        # Clears the file and prepares for writing
         self.file.write("solid ASCII\n")
     def write_facet(self, n, v):
+        # Write a facet using a normal vector and a tuple of vertex vectors
         v1, v2, v3 = v[0], v[1], v[2]
         n1, n2, n3 = to_man(n[0]), to_man(n[1]), to_man(n[2])
         self.file.write(f"facet normal {n1} {n2} {n3}\n")
@@ -129,5 +134,6 @@ class Stl:
         self.file.write(f"vertex {v31} {v32} {v33}\n")
         self.file.write("endloop\nendfacet\n")
     def finalize(self):
+        # Closes the file
         self.file.write("endsolid")
         self.file.close()
