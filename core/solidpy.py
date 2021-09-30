@@ -20,9 +20,14 @@ def normalize(v):
     m = mag(v)
     return (v[0]/m, v[1]/m, v[2]/m)
 
+def dot_product(a, b):
+    return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]
+
 def cross_product(a, b):
-    v = (a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0])
-    return v
+    return (a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0])
+
+def scalar_multiple(a, c):
+    return (a[0]*c, a[1]*c, a[2]*c)
 
 class Facet:
     def __init__(self, n):
@@ -70,6 +75,7 @@ class Stl:
         self.stl = []
         self.surface_area = 0
         self.volume = 0
+        self.drag_coefficient = 0
     def parse(self):
         self.stl = []
         for line in self.text:
@@ -117,6 +123,22 @@ class Stl:
             buoyancy_vector[1] += a*depth*n[1]
             buoyancy_vector[2] += a*depth*n[2]
         return mag(buoyancy_vector)
+    def compute_drag_coefficient(self, fluid_velocity_vector, fluid_density):
+        # USE AT YOUR OWN RISK
+        # This function estimates drag coefficient very roughly
+        self.drag_coefficient = 0
+        drag = 0
+        total_area = 0
+        fluid_speed = mag(fluid_velocity_vector)
+        fluid_velocity_direction = normalize(fluid_velocity_vector)
+        for facet in self.stl:
+            d = dot_product(normalize(facet.normal_vector), fluid_velocity_direction)
+            if d > 0: # Checking to see if the facet is facing the fluid flow or not
+                facet.compute_area()
+                total_area += facet.area*d
+                drag += 0.5*fluid_density*facet.area*d*fluid_speed*fluid_speed
+        self.drag_coefficient = 2*drag/(fluid_density*fluid_speed*fluid_speed*total_area)
+        return self.drag_coefficient
     def initialize(self):
         # Clears the file and prepares for writing
         self.file.write("solid ASCII\n")
@@ -137,3 +159,6 @@ class Stl:
         # Closes the file
         self.file.write("endsolid")
         self.file.close()
+
+s = Stl("..\\test\\propeller.stl")
+s.parse()
