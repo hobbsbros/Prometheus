@@ -1,33 +1,36 @@
 # Solidpy
 # A super basic Python library for processing STL files
 
+# Convert a mantissa/scientific value to a decimal
 def to_dec(mantissa):
     split_num = mantissa.split("e")
     m = float(split_num[0])
     e = float(split_num[1])
     return m*pow(10, e)
 
+# Convert a decimal to scientific notation/mantissa form
 def to_man(decimal):
     return "{:e}".format(decimal)
 
+# Find the magnitude of a vector
 def mag(v):
     magnitude = 0
     for element in v:
         magnitude += pow(element, 2)
     return pow(magnitude, 0.5)
 
+# Normalize a vector
 def normalize(v):
     m = mag(v)
     return (v[0]/m, v[1]/m, v[2]/m)
 
+# Find the dot product of two vectors
 def dot_product(a, b):
     return a[0]*b[0] + a[1]*b[1] + a[2]*b[2]
 
+# Find the cross product of two vectors
 def cross_product(a, b):
     return (a[1]*b[2] - a[2]*b[1], a[2]*b[0] - a[0]*b[2], a[0]*b[1] - a[1]*b[0])
-
-def scalar_multiple(a, c):
-    return (a[0]*c, a[1]*c, a[2]*c)
 
 class Facet:
     def __init__(self, n):
