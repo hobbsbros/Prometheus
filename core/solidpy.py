@@ -75,7 +75,7 @@ class Stl:
         self.stl = []
         self.surface_area = 0
         self.volume = 0
-        self.drag_coefficient = 0
+        self.frontal_area = 0
     def parse(self):
         self.stl = []
         for line in self.text:
@@ -123,22 +123,16 @@ class Stl:
             buoyancy_vector[1] += a*depth*n[1]
             buoyancy_vector[2] += a*depth*n[2]
         return mag(buoyancy_vector)
-    def compute_drag_coefficient(self, fluid_velocity_vector, fluid_density):
-        # USE AT YOUR OWN RISK
-        # This function estimates drag coefficient very roughly
-        self.drag_coefficient = 0
-        drag = 0
-        total_area = 0
-        fluid_speed = mag(fluid_velocity_vector)
+    def compute_frontal_area(self, fluid_velocity_vector):
+        # Frontal/silhouette area is calculated with respect to fluid_velocity_vector
+        self.frontal_area = 0
         fluid_velocity_direction = normalize(fluid_velocity_vector)
         for facet in self.stl:
             d = dot_product(normalize(facet.normal_vector), fluid_velocity_direction)
-            if d > 0: # Checking to see if the facet is facing the fluid flow or not
+            if d > 0:
                 facet.compute_area()
-                total_area += facet.area*d
-                drag += 0.5*fluid_density*facet.area*d*fluid_speed*fluid_speed
-        self.drag_coefficient = 2*drag/(fluid_density*fluid_speed*fluid_speed*total_area)
-        return self.drag_coefficient
+                self.frontal_area += facet.area*d
+        return self.frontal_area
     def initialize(self):
         # Clears the file and prepares for writing
         self.file.write("solid ASCII\n")
