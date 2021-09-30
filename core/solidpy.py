@@ -153,6 +153,3 @@ class Stl:
         # Closes the file
         self.file.write("endsolid")
         self.file.close()
-
-s = Stl("..\\test\\propeller.stl")
-s.parse()
