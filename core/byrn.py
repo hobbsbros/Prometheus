@@ -18,6 +18,7 @@ class Motor:
     def compute_mass_flux(self):
         pass # Units kg/s/m2
     def compute_exhaust_pressure(self):
+        pass # Approximate steady state pressure
     def compute_exhaust_velocity(self):
         pass # Approximate steady state gas velocity
     def compute_thrust(self, backpressure):
